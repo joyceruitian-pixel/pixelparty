@@ -1,0 +1,43 @@
+{
+  "version": "6",
+  "dialect": "sqlite",
+  "id": "ee23b402-6b40-4a04-aee8-e8023996080e",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "tables": {
+    "ai_usage": {
+      "name": "ai_usage",
+      "columns": {
+        "day": {
+          "name": "day",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "requests": {
+          "name": "requests",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    }
+  },
+  "views": {},
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "indexes": {}
+  }
+}

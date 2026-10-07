@@ -1,0 +1,13 @@
+import {build} from 'esbuild';
+import {readFile,writeFile,mkdir,rm,readdir,cp} from 'node:fs/promises';
+const assets={};
+for(const file of await readdir('web'))assets['/'+file]=await readFile('web/'+file,'utf8');
+await mkdir('.sites-runtime',{recursive:true});
+await writeFile('.sites-runtime/assets.js','export default '+JSON.stringify(assets));
+await rm('dist',{recursive:true,force:true});
+await mkdir('dist/server',{recursive:true});
+await build({entryPoints:['worker/index.js'],outfile:'dist/server/index.js',bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true});
+await mkdir('dist/.openai',{recursive:true});
+await cp('.openai/hosting.json','dist/.openai/hosting.json');
+await cp('drizzle','dist/drizzle',{recursive:true});
+console.log('Built Sidequest Worker and bundled browser assets');

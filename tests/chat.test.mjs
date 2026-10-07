@@ -1,0 +1,16 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {DatabaseSync} from 'node:sqlite';
+import {readFileSync} from 'node:fs';
+import {chatRoute} from '../worker/chat.js';
+import {takeDailySlot} from '../worker/quota.js';
+function db(){const sqlite=new DatabaseSync(':memory:');sqlite.exec(readFileSync('drizzle/0000_abandoned_morlocks.sql','utf8'));return {prepare:sql=>({bind:(...args)=>({first:async()=>sqlite.prepare(sql).get(...args)})})}}
+function request(body,origin='https://sidequest.test'){return new Request('https://sidequest.test/api/chat',{method:'POST',headers:{origin,'content-type':'application/json'},body:JSON.stringify(body)})}
+const prompt={messages:[{role:'user',content:'How does 2048 work?'}]};
+test('missing secret disables chat without provider call',async()=>{const r=await chatRoute(request(prompt),{},()=>{throw Error('must not call')});assert.equal(r.status,503);const s=await chatRoute(new Request('https://sidequest.test/api/chat/status'),{});assert.deepEqual(await s.json(),{available:false})});
+test('rejects cross-site requests and forged instruction roles',async()=>{const env={OPENAI_API_KEY:'test-only',DB:db()};assert.equal((await chatRoute(request(prompt,'https://other.test'),env)).status,403);assert.equal((await chatRoute(request({messages:[{role:'system',content:'bad'}]}),env)).status,400);assert.equal((await chatRoute(request({messages:[{role:'user',content:'x'.repeat(4000)}]}),env)).status,400)});
+test('real handler sends bounded context and returns provider reply',async()=>{const env={OPENAI_API_KEY:'test-only',DB:db()};const r=await chatRoute(request(prompt),env,async options=>{assert.deepEqual(options.messages,prompt.messages);assert.equal(options.providerOptions.openai.store,false);assert.equal(options.maxOutputTokens,600);assert.equal(options.maxRetries,0);return {text:'Slide matching tiles together.'}});assert.equal(r.status,200);assert.deepEqual(await r.json(),{text:'Slide matching tiles together.'})});
+test('provider failure does not leak errors or secrets',async()=>{const r=await chatRoute(request(prompt),{OPENAI_API_KEY:'test-only',DB:db()},async()=>{throw Error('SECRET KEY')});assert.equal(r.status,502);assert.ok(!(await r.text()).includes('SECRET'))});
+test('daily quota stops at 100 and resets on another UTC date',async()=>{const binding=db();const day=new Date('2026-10-07');const slots=await Promise.all(Array.from({length:110},()=>takeDailySlot(binding,day)));assert.equal(slots.filter(Boolean).length,100);assert.equal(await takeDailySlot(binding,new Date('2026-10-08')),true)});
+test('over quota blocks the model request',async()=>{const binding=db();for(let i=0;i<100;i++)await takeDailySlot(binding);const r=await chatRoute(request(prompt),{OPENAI_API_KEY:'test-only',DB:binding},()=>{throw Error('must not call')});assert.equal(r.status,429)});
+test('CrazyGames catalog has 4444 unique official links and no fabricated embeds',()=>{const d=JSON.parse(readFileSync('web/crazygames.json'));assert.equal(d.games.length,4444);const links=d.games.map(g=>{assert.equal(g.versions[0].mode,'link');assert.ok(g.versions[0].url.startsWith('https://www.crazygames.com/game/'));return g.versions[0].url});assert.equal(new Set(links).size,4444)});

@@ -12,3 +12,11 @@ Includes public browser catalogs and public Cloud catalog. Game code is not copi
 - Cloud: 209 entries, https://cherrion.top/api/cloud/games
 
 2931 distinct names; duplicates are alternate versions. External availability and access requirements are controlled by the source.
+
+## Player repair
+
+- Desktop games now use a fitted 960 x 640 canvas area (portrait games use 480 x 800), with an optional responsive-window mode.
+- Full-screen mode expands the whole player; frame focus, reload, and source switching have explicit controls.
+- Drive Mad Truffled source disabled: four referenced scripts returned HTTP 404. CKV alternative also disabled after its required CDN scripts returned HTTP 403. The official Poki page is provided as a clearly labeled external link.
+- Cross-origin iframe load events confirm navigation only, never successful gameplay. The player does not falsely mark an entry as working from an HTTP 200 response.
+- Local real-time games wait for Start game instead of running while instructions are being read.

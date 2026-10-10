@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101016">
+<title>PixelParty Shop</title>
+<link rel="stylesheet" href="style.css?v=5">
+</head>
+<body class="shop-page">
+<header>
+  <a href="index.html" class="brand" aria-label="PixelParty home"><span class="brand-icon">✳</span> PixelParty<span class="dot">.</span></a>
+  <span class="header-note">THE PIXELPARTY SHOP</span>
+  <a class="back-link" href="index.html">← Back to games</a>
+</header>
+<main>
+  <section class="shop-hero">
+    <div><span class="eyebrow">SPEND YOUR PLAY POINTS</span><h1>Make it <span>retro.</span></h1><p>Your points stay on this device. No account needed.</p></div>
+    <div class="wallet-card"><span>Your points</span><strong id="shop-wallet">0</strong><small>Earn 1 point every 30 seconds of active play.</small></div>
+  </section>
+  <section class="shop-grid" aria-label="Shop items">
+    <article class="shop-item">
+      <div class="retro-preview" aria-hidden="true"><span>PIXEL</span><b>PARTY</b></div>
+      <div class="shop-item-body"><span class="pill">STYLE UPGRADE</span><h2>Retro mode</h2><p>Give PixelParty a classic arcade look with pixel fonts, scanlines, and bright terminal colors.</p><button id="retro-buy" class="action">Buy for 25 points</button><p id="retro-status" class="shop-status" role="status"></p></div>
+    </article>
+  </section>
+  <p class="shop-note"><a href="index.html">Back to PixelParty</a> · Purchases are saved with localStorage in this browser.</p>
+</main>
+<script src="shop.js?v=1"></script>
+</body>
+</html>

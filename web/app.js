@@ -71,8 +71,7 @@ async function loadCatalog(){
  const sources=[['catalog.json','Cherri'],['crazygames.json','CrazyGames']];
  const results=await Promise.all(sources.map(async([file,label])=>{
   if(catalogLoaded.has(label))return;
-  const response=await fetch(file+'?v=4');if(!response.ok)throw Error(label);
-  const data=await response.json();if(!Array.isArray(data.games))throw Error(label);
+  let data;try{const response=await fetch(file+'?v=4');if(!response.ok)throw Error(label);data=await response.json()}catch{data=globalThis.__PIXELPARTY_CATALOGS__?.[label];if(!data)throw Error(label)}if(!Array.isArray(data.games))throw Error(label);
   data.games.forEach((g,i)=>{const versions=g.versions.filter(v=>{try{return new URL(v.url).protocol==='https:'}catch{return false}});if(!versions.length)return;
    games.push([label.toLowerCase()+'-'+i,g.name,label,'External game','#'+['344e3b','5f4b86','855245','3b4679','705069','3b6671'][i%6],'',{...g,versions}]);
   });catalogLoaded.add(label);

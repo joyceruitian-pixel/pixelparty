@@ -54,3 +54,12 @@ no-key state, validation, origin check, error redaction, and quota SQL using
 SQLite. A live provider response cannot be verified until the owner connects
 AI. External game availability is not guaranteed; school policies are not
 changed by this site.
+
+## PixelParty originals (2026-10-10)
+
+PixelParty now includes 28 self-contained games that run from this project.
+The newest 12 are Connect Four, Rock Paper Scissors, Blackjack 21,
+Whack-a-Bot, Word Scramble, Higher or Lower, Dice Duel, Bubble Pop, Typing
+Dash, Maze Escape, Mini Sudoku, and Catch the Star. They use the same local
+score, restart, mobile-control, and play-time points systems as the first 16.
+No third-party game code was copied for these additions.
